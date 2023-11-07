@@ -41,12 +41,16 @@ class GestureRecognition:
         gestures = self.currentGesture
         self.lock.release()
         for name in gestures:
-            cv2.putText(frame, name, (225, 400), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 3)
+            cv2.putText(frame, name, (225, 400), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 5)
             cv2.putText(frame, name, (225, 400), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
     def __result_callback(self, result, output_image: mp.Image, timestamp_ms: int):
         self.lock.acquire()
         self.currentGesture = []
+        for hand in result.handedness:
+            print("Hand:")
+            handName = hand[0].category_name
+            print(handName)
         for hand_gesture in result.gestures:
             print("Gestures:")
             gestureName = hand_gesture[0].category_name
@@ -55,11 +59,6 @@ class GestureRecognition:
         self.lock.release()
         #print('gesture recognition result: {}'.format(result.gestures))
 
-#def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int):
- #   for gesture_category in result.gestures[0]:
-  #      category_name = gesture_category.category_name
-   #     return_string = category_name
-    #return return_string
 if __name__ == "__main__":
     rec = GestureRecognition()
     rec.main()
