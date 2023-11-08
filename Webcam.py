@@ -23,15 +23,15 @@ class GestureRecognition:
         video = cv2.VideoCapture(0)
 
         while (True):
-            _, frame = video.read()
-            if not _:
+            frameGrab, frame = video.read()
+            if not frameGrab:
                 break
             flipped_frame = cv2.flip(frame, 1)
             timestamp = video.get(cv2.CAP_PROP_POS_MSEC)
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=flipped_frame)
             recognizer.recognize_async(mp_image, int(timestamp))
             self.frame_gesture(frame)
-            cv2.imshow("webcam test", frame)
+            cv2.imshow("Gesture Interpreter", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         video.release()
@@ -54,10 +54,11 @@ class GestureRecognition:
         for hand_gesture in result.gestures:
             print("Gestures:")
             gestureName = hand_gesture[0].category_name
+            gesturePercent = str(format(f"{hand_gesture[0].score:.2%}"))
             print(gestureName)
-            self.currentGesture.append(gestureName)
+            self.currentGesture.append(gestureName + " " + gesturePercent)
         self.lock.release()
-        #print('gesture recognition result: {}'.format(result.gestures))
+        # print('gesture recognition result: {}'.format(result))
 
 if __name__ == "__main__":
     rec = GestureRecognition()
